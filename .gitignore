@@ -1,0 +1,40 @@
+# Gradle & Build Artifacts
+*.iml
+.gradle
+/build
+/app/build
+/gradle-dist
+/captures
+.externalNativeBuild
+.cxx
+*.apk
+*.aab
+*.zip
+
+# Local configuration
+/local.properties
+/.idea/
+.DS_Store
+
+# Python & AI Virtual Environments
+.venv/
+venv/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+*.ipynb_checkpoints
+
+# Large AI Weights & Model Files
+*.onnx
+*.onnx.data
+*.pt
+*.pth
+*.bin
+
+# Media & Temporary Raw Video/Recordings
+*.mp4
+*.mkv
+*.mov
+*.avi
+Untitled*.txt

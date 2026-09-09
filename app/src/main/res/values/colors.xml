@@ -1,0 +1,7 @@
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="navy_dark">#FF0A0E17</color>
+    <color name="cyan_accent">#FF00D2FF</color>
+    <color name="emerald_accent">#FF00E676</color>
+</resources>

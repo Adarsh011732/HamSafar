@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Chameleon Nav — SIH26168 Intelligent Dead Reckoning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="mobile-frame">
+    <!-- Top App Header -->
+    <header class="app-header">
+      <div class="header-main">
+        <div class="brand-group">
+          <div class="brand-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polygon points="12 2 19 21 12 17 5 21 12 2" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <div class="brand-title">CHAMELEON NAV</div>
+            <div class="brand-sub">AI-ML Intelligent Dead Reckoning</div>
+          </div>
+        </div>
+        <div class="demo-badge">
+          <span class="pulse-dot"></span>
+          <span>LIVE HARDWARE</span>
+        </div>
+      </div>
+      <div class="header-tagline">“When GPS Disappears, We Adapt.” • SIH26168 Real Hardware Mode</div>
+    </header>
+
+    <!-- Main Screens Container -->
+    <main class="screens-container">
+      
+      <!-- SCREEN 1: NAVIGATION DASHBOARD -->
+      <section id="screen-nav" class="screen-view active">
+        <!-- Quick Mode Selector Pill (Real Hardware vs Demo Simulation) -->
+        <div class="mode-selector-pill">
+          <button id="btn-mode-hardware" class="mode-pill-btn">🛰️ REAL HARDWARE</button>
+          <button id="btn-mode-demo" class="mode-pill-btn active demo">🎮 DEMO SIMULATION</button>
+        </div>
+
+        <!-- Status Card -->
+        <div class="status-card">
+          <div class="status-row">
+            <div class="status-col">
+              <span class="status-label">GNSS STATUS</span>
+              <div class="status-val-wrap">
+                <span id="gnss-status-dot" class="status-indicator available"></span>
+                <span id="gnss-status-text" class="status-val gnss-available">AVAILABLE</span>
+              </div>
+            </div>
+            <div class="status-col align-right">
+              <span class="status-label">NAVIGATION MODE</span>
+              <div id="nav-mode-badge" class="nav-mode-badge mode-gnss-ins">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
+                  <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0 0 13 3.06V1h-2v2.06A8.994 8.994 0 0 0 3.06 11H1v2h2.06A8.994 8.994 0 0 0 11 20.94V23h2v-2.06A8.994 8.994 0 0 0 20.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                </svg>
+                <span id="nav-mode-text">GNSS + INS</span>
+              </div>
+            </div>
+          </div>
+          <div class="status-desc-bar">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            <span id="status-desc-text">GNSS Fix Established. Normal INS fusion.</span>
+          </div>
+          <div class="status-chips-row">
+            <div class="status-chip">
+              <span id="chip-filter-dot" class="chip-dot dot-cyan"></span>
+              <span class="chip-label">FUSION:</span>
+              <span id="chip-filter-status" class="chip-val chip-cyan">EKF / INS</span>
+            </div>
+            <div class="status-chip">
+              <span class="chip-label">AI SPEED:</span>
+              <span id="chip-ai-speed" class="chip-val chip-purple">0.0 km/h</span>
+            </div>
+            <div class="status-chip">
+              <span class="chip-label">IMU:</span>
+              <span id="chip-imu-status" class="chip-val chip-emerald">50 Hz LIVE</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event Banner Notification -->
+        <div id="event-banner" class="event-banner hidden">
+          <span id="banner-icon" class="banner-icon">⚠</span>
+          <span id="banner-text" class="banner-text">GNSS SIGNAL LOST: Switching to AI-Assisted Dead Reckoning...</span>
+        </div>
+
+        <!-- Canvas Navigation Map -->
+        <div class="map-wrapper">
+          <canvas id="nav-canvas"></canvas>
+          
+          <!-- Drift Indicator Overlay -->
+          <div id="map-drift-overlay" class="drift-overlay hidden">
+            <span class="drift-dot"></span>
+            <span id="drift-overlay-text">AI DR DRIFT: 0.0 m</span>
+          </div>
+
+          <!-- Compass & Offline Badge -->
+          <div class="map-top-right">
+            <div class="compass-pill">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><polygon points="12 2 19 21 12 17 5 21 12 2"/></svg>
+              <span>N</span>
+            </div>
+            <div class="offline-tag">OFFLINE VECTOR MAP</div>
+          </div>
+
+          <!-- Legend Overlay -->
+          <div class="map-legend">
+            <div class="legend-item">
+              <span class="legend-dot dot-ref"></span>
+              <span>GNSS / Ref</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot dot-est"></span>
+              <span>Estimated / DR</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Metrics Panel -->
+        <div class="metrics-panel">
+          <!-- Row 1: Speed, Heading, Accuracy -->
+          <div class="metric-row">
+            <div class="metric-card">
+              <div class="metric-head">
+                <span>SPEED</span>
+                <span class="metric-icon">⚡</span>
+              </div>
+              <div class="metric-body">
+                <span id="metric-speed" class="metric-val">42.5</span>
+                <span class="metric-unit">km/h</span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-head">
+                <span>HEADING</span>
+                <span class="metric-icon">🧭</span>
+              </div>
+              <div class="metric-body">
+                <span id="metric-heading" class="metric-val">128°</span>
+                <span id="metric-cardinal" class="metric-unit">SE</span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-head">
+                <span>ACCURACY</span>
+                <span class="metric-icon">🎯</span>
+              </div>
+              <div class="metric-body">
+                <span id="metric-accuracy" class="metric-val">4.2</span>
+                <span class="metric-unit">m</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 2: Position & Confidence -->
+          <div class="metric-row">
+            <div class="metric-card flex-grow-1">
+              <div class="metric-head">
+                <span>POSITION (LAT, LON)</span>
+                <span class="metric-icon">📍</span>
+              </div>
+              <div class="metric-body-large">
+                <span id="metric-position" class="metric-coord">28.6139° N, 77.2090° E</span>
+              </div>
+            </div>
+
+            <div class="metric-card flex-grow-08">
+              <div class="metric-head">
+                <span>CONFIDENCE</span>
+                <span id="metric-conf-pct" class="metric-conf-val">98%</span>
+              </div>
+              <div class="progress-bar-container">
+                <div id="conf-progress-bar" class="progress-bar-fill" style="width: 98%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 3: 6-Module Fusion Diagnostics Card -->
+          <div class="fusion-diagnostics-box">
+            <div class="fusion-title">
+              <span class="fusion-dot pulse"></span>
+              <span>MULTI-SENSOR ANTI-DRIFT FUSION (AI + INS + NHC + ZUPT + MAP MATCH + GNSS)</span>
+            </div>
+            <div class="fusion-badges-grid">
+              <div class="fusion-badge badge-active" id="badge-ai">
+                <span class="badge-dot dot-purple"></span>
+                <span class="badge-text">AI (IO-VNBD)</span>
+              </div>
+              <div class="fusion-badge badge-active" id="badge-ins">
+                <span class="badge-dot dot-cyan"></span>
+                <span class="badge-text">INS STRAPDOWN</span>
+              </div>
+              <div class="fusion-badge badge-active" id="badge-nhc">
+                <span class="badge-dot dot-emerald"></span>
+                <span class="badge-text">NHC LATERAL</span>
+              </div>
+              <div class="fusion-badge" id="badge-zupt">
+                <span class="badge-dot dot-muted"></span>
+                <span class="badge-text">ZUPT (STANDSTILL)</span>
+              </div>
+              <div class="fusion-badge badge-active" id="badge-map">
+                <span class="badge-dot dot-amber"></span>
+                <span class="badge-text">MAP MATCH</span>
+              </div>
+              <div class="fusion-badge badge-active" id="badge-gnss">
+                <span class="badge-dot dot-blue"></span>
+                <span class="badge-text">GNSS FIX</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Control Dock -->
+        <div class="control-dock">
+          <div class="control-row">
+            <button id="btn-outage" class="btn btn-outage" disabled>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0 0 13 3.06V1h-2v2.06A8.994 8.994 0 0 0 3.06 11H1v2h2.06A8.994 8.994 0 0 0 11 20.94V23h2v-2.06A8.994 8.994 0 0 0 20.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
+              <span>SIMULATE GNSS OUTAGE</span>
+            </button>
+            <button id="btn-restore" class="btn btn-restore" disabled>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+              <span>RESTORE GNSS</span>
+            </button>
+          </div>
+
+          <div class="control-row">
+            <button id="btn-start" class="btn btn-start">
+              <svg id="start-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><polygon points="8 5 19 12 8 19 8 5"/></svg>
+              <span id="start-label">START NAVIGATION</span>
+            </button>
+            <button id="btn-reset" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+              <span>RESET</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 2: SYSTEM MONITOR (DEBUG) -->
+      <section id="screen-monitor" class="screen-view">
+        <div class="screen-scroll-content">
+          <div class="disclaimer-banner">
+            <span>🔬</span>
+            <span>SIMULATED SENSOR DATA (DEMO MODE)</span>
+          </div>
+
+          <!-- AI Model Box (IO-VNBD Trained) -->
+          <div class="card-box">
+            <div class="card-box-title purple">AI / ML VELOCITY INFERENCE ENGINE (IO-VNBD BENCHMARK)</div>
+            <div class="telemetry-grid">
+              <div class="telemetry-pill">
+                <span class="pill-label">DATASET / ARCH</span>
+                <span class="pill-val purple">IO-VNBD (1D-CNN + Bi-GRU)</span>
+              </div>
+              <div class="telemetry-pill">
+                <span class="pill-label">AI SPEED ESTIMATE</span>
+                <span id="mon-ai-speed" class="pill-val cyan">42.1 km/h</span>
+              </div>
+              <div class="telemetry-pill">
+                <span class="pill-label">INFERENCE LATENCY</span>
+                <span id="mon-latency" class="pill-val green">12 ms</span>
+              </div>
+              <div class="telemetry-pill">
+                <span class="pill-label">NHC / ZUPT RESIDUAL</span>
+                <span id="mon-error" class="pill-val emerald">0.02 m/s</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Accelerometer Card -->
+          <div class="card-box">
+            <div class="card-box-header">
+              <span class="card-box-title cyan">3-AXIS ACCELEROMETER (AX, AY, AZ)</span>
+              <span class="unit-tag">UNIT: m/s²</span>
+            </div>
+            <div class="axis-bars">
+              <div class="axis-row">
+                <span class="axis-name cyan">X</span>
+                <div class="axis-track"><div id="bar-ax" class="axis-fill cyan" style="width: 15%;"></div></div>
+                <span id="val-ax" class="axis-val">+0.12</span>
+              </div>
+              <div class="axis-row">
+                <span class="axis-name green">Y</span>
+                <div class="axis-track"><div id="bar-ay" class="axis-fill green" style="width: 10%;"></div></div>
+                <span id="val-ay" class="axis-val">+0.05</span>
+              </div>
+              <div class="axis-row">
+                <span class="axis-name amber">Z</span>
+                <div class="axis-track"><div id="bar-az" class="axis-fill amber" style="width: 65%;"></div></div>
+                <span id="val-az" class="axis-val">+9.81</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gyroscope Card -->
+          <div class="card-box">
+            <div class="card-box-header">
+              <span class="card-box-title green">3-AXIS GYROSCOPE (GX, GY, GZ)</span>
+              <span class="unit-tag">UNIT: rad/s</span>
+            </div>
+            <div class="axis-bars">
+              <div class="axis-row">
+                <span class="axis-name cyan">X</span>
+                <div class="axis-track"><div id="bar-gx" class="axis-fill cyan" style="width: 8%;"></div></div>
+                <span id="val-gx" class="axis-val">+0.01</span>
+              </div>
+              <div class="axis-row">
+                <span class="axis-name green">Y</span>
+                <div class="axis-track"><div id="bar-gy" class="axis-fill green" style="width: 12%;"></div></div>
+                <span id="val-gy" class="axis-val">+0.02</span>
+              </div>
+              <div class="axis-row">
+                <span class="axis-name amber">Z</span>
+                <div class="axis-track"><div id="bar-gz" class="axis-fill amber" style="width: 5%;"></div></div>
+                <span id="val-gz" class="axis-val">-0.01</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- EKF Card -->
+          <div class="card-box">
+            <div class="card-box-title cyan">INERTIAL FUSION & EKF ESTIMATOR</div>
+            <div class="telemetry-grid">
+              <div class="telemetry-pill">
+                <span class="pill-label">FILTER MODE</span>
+                <span id="mon-filter-mode" class="pill-val cyan">GNSS + INS</span>
+              </div>
+              <div class="telemetry-pill">
+                <span class="pill-label">COVARIANCE TRACE</span>
+                <span id="mon-cov" class="pill-val amber">0.0420</span>
+              </div>
+              <div class="telemetry-pill">
+                <span class="pill-label">CROSS-TRACK DRIFT</span>
+                <span id="mon-drift" class="pill-val green">0.0 m</span>
+              </div>
+              <div class="telemetry-pill">
+                <span class="pill-label">CONFIDENCE</span>
+                <span id="mon-conf" class="pill-val green">98%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 3: SIH DEMO (FLOW SEQUENCE) -->
+      <section id="screen-sih" class="screen-view">
+        <div class="screen-scroll-content">
+          <!-- Hero Card -->
+          <div class="sih-hero-card">
+            <div class="sih-hero-sub">SMART INDIA HACKATHON 2026 • SIH26168</div>
+            <div class="sih-hero-title">AI-ML Based Intelligent Dead Reckoning System for Seamless Navigation</div>
+            <div class="sih-hero-team">Team: THE CHAMELEONS • “When GPS Disappears, We Adapt.”</div>
+          </div>
+
+          <!-- Automated Demo Button -->
+          <button id="btn-auto-demo" class="btn btn-auto-demo">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+            <span id="auto-demo-label">RUN AUTOMATED SIH JUDGE DEMO (30s)</span>
+          </button>
+
+          <!-- Step by Step Sequence -->
+          <div class="card-box">
+            <div class="card-box-title cyan">SIH 2026 LIVE DEMONSTRATION FLOW</div>
+            <div class="step-sequence">
+              <div id="step-1" class="step-item active">
+                <div class="step-badge">1</div>
+                <div class="step-content">
+                  <div class="step-title">GNSS AVAILABLE</div>
+                  <div class="step-sub">Satellite constellation locked (Normal fix)</div>
+                </div>
+                <span class="step-tag">ACTIVE</span>
+              </div>
+              <div id="step-2" class="step-item">
+                <div class="step-badge">2</div>
+                <div class="step-content">
+                  <div class="step-title">NAVIGATION</div>
+                  <div class="step-sub">Vehicle in transit, INS+GNSS fusion online</div>
+                </div>
+                <span class="step-tag">WAITING</span>
+              </div>
+              <div id="step-3" class="step-item">
+                <div class="step-badge">3</div>
+                <div class="step-content">
+                  <div class="step-title">GNSS LOST</div>
+                  <div class="step-sub">Signal blockage: Tunnel, flyover or electronic jam</div>
+                </div>
+                <span class="step-tag">WAITING</span>
+              </div>
+              <div id="step-4" class="step-item">
+                <div class="step-badge">4</div>
+                <div class="step-content">
+                  <div class="step-title">DEAD RECKONING</div>
+                  <div class="step-sub">AI-ML inertial speed & strapdown attitude integration</div>
+                </div>
+                <span class="step-tag">WAITING</span>
+              </div>
+              <div id="step-5" class="step-item">
+                <div class="step-badge">5</div>
+                <div class="step-content">
+                  <div class="step-title">GNSS RESTORED</div>
+                  <div class="step-sub">Fresh pseudorange fixes acquired</div>
+                </div>
+                <span class="step-tag">WAITING</span>
+              </div>
+              <div id="step-6" class="step-item">
+                <div class="step-badge">6</div>
+                <div class="step-content">
+                  <div class="step-title">RECOVERY</div>
+                  <div class="step-sub">Drift correction filter smoothly synchronizing position</div>
+                </div>
+                <span class="step-tag">WAITING</span>
+              </div>
+              <div id="step-7" class="step-item">
+                <div class="step-badge">7</div>
+                <div class="step-content">
+                  <div class="step-title">GNSS + INS</div>
+                  <div class="step-sub">Seamless transition back to ground truth fusion</div>
+                </div>
+                <span class="step-tag">WAITING</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Key Talking Points Card -->
+          <div class="card-box">
+            <div class="card-box-title white">KEY DEMONSTRATION TALKING POINTS</div>
+            <div class="talking-points">
+              <div class="point-item">
+                <div class="point-num">1</div>
+                <div>
+                  <div class="point-title">Continuous Trajectory Without Teleportation</div>
+                  <div class="point-desc">When GNSS signal vanishes, navigation continues seamlessly along the estimated path without freezing or snapping.</div>
+                </div>
+              </div>
+              <div class="point-item">
+                <div class="point-num">2</div>
+                <div>
+                  <div class="point-title">AI-ML IMU Speed Estimation</div>
+                  <div class="point-desc">Eliminates double-integration drift by using deep learning on 6-axis IMU features to predict vehicle velocity.</div>
+                </div>
+              </div>
+              <div class="point-item">
+                <div class="point-num">3</div>
+                <div>
+                  <div class="point-title">Smooth Recovery Convergence</div>
+                  <div class="point-desc">Upon GNSS restoration, drift is resolved via continuous trajectory alignment over 2 seconds rather than jumping instantaneously.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 4: SETTINGS -->
+      <section id="screen-settings" class="screen-view">
+        <div class="screen-scroll-content">
+          <div class="card-box">
+            <div class="card-box-title white">SIMULATION SPEED MULTIPLIER</div>
+            <div class="card-box-sub">Control route traversal speed during live presentation</div>
+            <div class="speed-selector">
+              <button class="btn-speed active" data-speed="1">1x</button>
+              <button class="btn-speed" data-speed="2">2x</button>
+              <button class="btn-speed" data-speed="5">5x</button>
+            </div>
+          </div>
+
+          <div class="card-box">
+            <div class="card-box-title white">DISPLAY & VISUALIZATION OPTIONS</div>
+            <div class="setting-row">
+              <div>
+                <div class="setting-title">Demo Simulation Mode</div>
+                <div class="setting-sub">Always active in this prototype build</div>
+              </div>
+              <input type="checkbox" checked disabled class="toggle-switch">
+            </div>
+            <div class="setting-row">
+              <div>
+                <div class="setting-title">Show Reference GNSS Path</div>
+                <div class="setting-sub">Draws the baseline trajectory on map</div>
+              </div>
+              <input id="toggle-ref-path" type="checkbox" checked class="toggle-switch">
+            </div>
+            <div class="setting-row">
+              <div>
+                <div class="setting-title">Live Sensor Telemetry</div>
+                <div class="setting-sub">Display IMU and EKF data streams</div>
+              </div>
+              <input id="toggle-debug-data" type="checkbox" checked class="toggle-switch">
+            </div>
+          </div>
+
+          <div class="card-box">
+            <div class="card-box-title white">DEMO RESET</div>
+            <div class="card-box-sub">Reset vehicle position back to Start (India Gate) and restore normal GNSS mode.</div>
+            <button id="btn-settings-reset" class="btn btn-secondary full-width">
+              <span>RESET ALL DEMO DATA</span>
+            </button>
+          </div>
+
+          <div class="card-box">
+            <div class="card-box-title white">ABOUT SYSTEM</div>
+            <div class="card-box-sub cyan">Smart India Hackathon 2026 • Problem SIH26168</div>
+            <div class="about-text">Team: THE CHAMELEONS<br>Build: 1.0.0-PROTOTYPE<br>Engine: Deterministic Inertial Navigation Simulation</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+      <button class="nav-tab active" data-target="screen-nav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><polygon points="12 2 19 21 12 17 5 21 12 2"/></svg>
+        <span>NAV</span>
+      </button>
+      <button class="nav-tab" data-target="screen-monitor">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+        <span>MONITOR</span>
+      </button>
+      <button class="nav-tab" data-target="screen-sih">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        <span class="tab-badge-text">SIH FLOW</span>
+        <span class="sih-pill-badge">SIH</span>
+      </button>
+      <button class="nav-tab" data-target="screen-settings">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/></svg>
+        <span>SETTINGS</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
