@@ -118,13 +118,16 @@ flowchart LR
 
     IMU --> GRAV
     GRAV --> ZUPT
-    ZUPT -- "Moving" --> CNN --> GRU --> PRED
-    ZUPT -- "Stationary" --> |Clamp 0.0 m/s| EKF
+    ZUPT -- "Moving" --> CNN
+    CNN --> GRU
+    GRU --> PRED
+    ZUPT -- "Stationary: Clamp 0.0 m/s" --> EKF
     PRED --> EKF
     NHC --> EKF
     BARO --> EKF
-    EKF --> OSRM --> SNAP
-    SNAP --> HUD["✨ Guaranteed Drift-Free Position\n(< 1.8% Error | 100% Offline)"]
+    EKF --> OSRM
+    OSRM --> SNAP
+    SNAP --> HUD["Guaranteed Drift-Free Position (< 1.8% Error | 100% Offline)"]
 
     style SENSORS fill:#1e293b,stroke:#475569,stroke-width:2px,color:#fff
     style PREPROC fill:#0f172a,stroke:#3b82f6,stroke-width:2px,color:#fff
