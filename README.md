@@ -277,7 +277,7 @@ Developed with ❤️ by **The Chameleons** for the **Smart India Hackathon (SIH
 | Role | Contributions |
 |:---|:---|
 | **Android & Embedded Navigation** | Jetpack Compose UI, Sensor Hardware Layer (50Hz), OSM & OSRM Engine, Offline Database |
-| **AI / Machine Learning** | 1D-CNN + Bi-GRU Kinematics, PyTorch Training Pipeline, ONNX Edge Optimization |
+| **AI / Machine Learning** | 1D-CNN + Bi-GRU Kinematics + Temporal Attention, PyTorch Training Pipeline, ONNX Edge Optimization |
 | **Sensor Fusion & Kalman Filter** | Extended Kalman Filter, Quaternion Attitude Filter, NHC & ZUPT Integration |
 
 Distributed under the [Apache License 2.0](LICENSE).
